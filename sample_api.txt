@@ -1,0 +1,67 @@
+--------------------------------------------------------
+1-POST http://127.0.0.1:5000/otp/send_otp 
+{
+    "mobile_number": "8919006012"
+}
+
+---------------------------------------------------
+
+2-GET http://127.0.0.1:5000/otp/verify_otp
+
+{
+    "mobile_number": "8919006012",
+    "otp":"742473"
+}
+
+
+---------------------------------------------------
+
+
+3-POST-http://127.0.0.1:5000/ride/create_ride
+{
+    "driver_id": "973239d3-a8f3-11ef-992f-06e09a310733",
+    "origin_lat": 12.9715987,
+    "origin_lon": 77.5945627,
+    "origin_addr": "Bangalore, India",
+    "dest_lat": 13.0826802,
+    "dest_lon": 80.2707184,
+    "dest_addr": "Chennai, India",
+    "price": 500,
+    "user_id": "6e690064-a8e9-11ef-992f-06e09a310733"
+}
+
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGVfbnVtYmVyIjoiODkxOTAwNjAxMiIsImV4cCI6MTczMjMwNjk3OH0.I5hCclicBHN-sW9DU15miudXGNKwsdVrJ2JJmGDiUZQ
+--------------------------------------------------------------------------------------------------------------------
+4-GET-http://127.0.0.1:5000/ride/get_driver_verified_details
+
+{
+    "driver_id": "973239d3-a8f3-11ef-992f-06e09a310733"
+}
+
+--------------------------------------------------------------------------------------------------------
+
+5-GET http://127.0.0.1:5000/fare/get_auto_fare
+{
+   "origin_lat": 17.4422,
+    "origin_lon": 78.3557,
+    "dest_lat": 17.4416,
+    "dest_lon": 78.3796
+}
+
+
+GET
+http://127.0.0.1:5000/map/get_mapbox_suggestions
+
+{
+   "query": "sasya",
+    "proximity_latitude": 78.3557,
+    "proximity_longitude": 17.4416,
+    "session_token": "unique-session-token"
+}
+
+
+
+
+GET http://127.0.0.1:5000/map/get_location_details
+
+

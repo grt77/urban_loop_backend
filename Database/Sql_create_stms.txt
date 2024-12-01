@@ -1,0 +1,38 @@
+CREATE TABLE urbanloop.users (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),          -- Auto-generated UUID for id
+    mobile_number VARCHAR(10) UNIQUE,                   -- Mobile number is unique
+    otp VARCHAR(6),                                    -- Column to store OTP
+    otp_updated_at TIMESTAMP DEFAULT NULL,              -- Timestamp for OTP update
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP     -- Timestamp for record creation
+);
+
+CREATE TABLE urbanloop.locations (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()), -- Unique identifier, auto-generated UUID
+    latitude DECIMAL(10, 8) NOT NULL,         -- Latitude with high precision
+    longitude DECIMAL(11, 8) NOT NULL,        -- Longitude with high precision
+    address VARCHAR(255) NOT NULL,            -- Address field
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Record creation time
+);
+
+
+CREATE TABLE rides (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),     -- Unique identifier for the ride
+    user_id CHAR(36) NOT NULL,                    -- References the user who created the ride
+    driver_id CHAR(36),                           -- References the driver assigned to the ride
+    origin_loc_id CHAR(36) NOT NULL,              -- References the location table for the origin
+    dest_loc_id CHAR(36) NOT NULL,                -- References the location table for the destination
+    ride_status ENUM('requested', 'accepted', 'started', 'completed', 'cancelled') DEFAULT 'requested',
+                                                  -- Status of the ride
+    price DECIMAL(10, 2),                         -- Price of the ride
+    accepted_at TIMESTAMP NULL DEFAULT NULL,      -- Timestamp when the ride was accepted by a driver
+    started_at TIMESTAMP NULL DEFAULT NULL,       -- Timestamp when the ride was started
+    completed_at TIMESTAMP NULL DEFAULT NULL,     -- Timestamp when the ride was completed
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Record creation time
+
+    FOREIGN KEY (user_id) REFERENCES users(id),   -- User table foreign key
+    FOREIGN KEY (driver_id) REFERENCES drivers(id), -- Driver table foreign key
+    FOREIGN KEY (origin_loc_id) REFERENCES locations(id), -- Location table foreign key
+    FOREIGN KEY (dest_loc_id) REFERENCES locations(id) -- Location table foreign key
+);
+
+
