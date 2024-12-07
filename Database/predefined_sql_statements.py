@@ -45,3 +45,10 @@ SET otp = %s,
     otp_CreatedAt = NOW()
 WHERE mobile_no = %s;
 """
+
+
+get_driver_otp_statement="""
+SELECT otp, NOW()-otp_updated_at as expiry_time
+            FROM urbanloop.drivers
+            WHERE mobile_no = %s
+"""

@@ -3,7 +3,7 @@ import random
 import os
 from  dotenv import load_dotenv
 from Database.dbclass import DBService
-from Database.predefined_sql_statements import get_otp_statement
+from Database.predefined_sql_statements import get_otp_statement,get_driver_otp_statement
 from datetime import datetime,timedelta
 
 
@@ -66,4 +66,18 @@ def send_whatsapp_message(phno, msg):
 
 
 
-
+def verify_otp_driver(mobile_number,otp):
+    try:
+        db=DBService()
+        otp_resp=db.fetch_one_record(get_driver_otp_statement,[mobile_number])
+        message="unknown error"
+        if int(otp_resp['otp'])==otp:
+            if otp_resp['expiry_time']<=350:
+                message="Validated"
+            else:
+                message="Expired"
+        else:
+            message="Invalid OTP"
+        return {"message":message}
+    except Exception as e:
+        return {message:str(e)}
