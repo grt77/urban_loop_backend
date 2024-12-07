@@ -30,7 +30,7 @@ def create_ride():
     except Exception as e:
         return {"message":str(e)}
 
-@ride_routes.route('/get_driver_verified_details',methods=['GET'])
+@ride_routes.route('/get_driver_verified_details',methods=['POST'])
 def get_driver_details():
     try:
         data = request.get_json()

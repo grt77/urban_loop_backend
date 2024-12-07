@@ -55,7 +55,9 @@ class DBService:
         try:
             with self.connection.cursor() as cursor:
                 log_debug_message(query)
-                cursor.execute(query, params)
+                log_debug_message(params)
+                temp=cursor.execute(query, params)
+                log_debug_message(temp)
                 self.connection.commit()
                 return {"message":"Success"}
         except Exception as e:

@@ -38,3 +38,10 @@ SELECT id
     WHERE mobile_number = %s
 
 """
+
+update_otp_details = """
+UPDATE urbanloop.drivers 
+SET otp = %s, 
+    otp_CreatedAt = NOW()
+WHERE mobile_no = %s;
+"""
