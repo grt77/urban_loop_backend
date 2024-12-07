@@ -4,7 +4,7 @@ from Services.fare_services import fare_calc_auto
 fare_routes=Blueprint('fare',__name__)
 
 
-@fare_routes.route('/get_auto_fare',methods=['GET'])
+@fare_routes.route('/get_auto_fare',methods=['POST'])
 def get_auto_fare():
     try:
         data=request.get_json()

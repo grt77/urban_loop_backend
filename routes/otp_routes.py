@@ -16,10 +16,11 @@ def send_otp_route():
         mobile_number=data.get('mobile_number')
         if not mobile_number:
             return jsonify({"error": "Mobile number is required"}), 400
-        otp = generate_otp()
-        resp=send_otp(mobile_number, otp) 
+        # otp = generate_otp()
+        otp = 123456
+        # resp=send_otp(mobile_number, otp) 
         result = db.execute_query_insert_otp_login(insert_query_intial_login, [mobile_number,otp])
-        #resp={'success':result["message"],'failure':None} #need to comment
+        resp={'success':result["message"],'failure':None} #need to comment
         if resp['success'] is not None:
             message="Success:-"+resp['success']
         else:
@@ -30,12 +31,13 @@ def send_otp_route():
         db.close
         return jsonify({'message':str(e)})
 
-@otp_routes.route('/verify_otp',methods=['GET'])
+@otp_routes.route('/verify_otp',methods=['POST'])
 def verify_otp_route():
     try:
         data=request.get_json()
         mobile_number=data.get('mobile_number')
         otp=data.get('otp')
+        log_debug_message(otp)
         resp=verify_otp(mobile_number,otp)
         if resp["message"]=="Validated":
             token=get_token(mobile_number)

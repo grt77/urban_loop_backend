@@ -36,7 +36,7 @@ def verify_otp(mobile_number,otp):
         db=DBService()
         otp_resp=db.fetch_one_record(get_otp_statement,[mobile_number])
         message="unknown error"
-        if otp_resp['otp']==otp:
+        if int(otp_resp['otp'])==otp:
             if otp_resp['expiry_time']<=350:
                 message="Validated"
             else:
