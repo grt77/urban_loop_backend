@@ -3,7 +3,7 @@ from Services.Map_service import get_location_details,get_mapbox_suggestions
 
 map_routes=Blueprint('map',__name__)
 
-@map_routes.route('/get_mapbox_suggestions',methods=['GET'])
+@map_routes.route('/get_mapbox_suggestions',methods=['POST'])
 def get_map_suggestions():
     try:
         data=request.get_json()
@@ -17,7 +17,7 @@ def get_map_suggestions():
         return {"Error":str(e)}
 
 
-@map_routes.route('/get_location_details',methods=['GET'])
+@map_routes.route('/get_location_details',methods=['POST'])
 def get_loc_details():
     try:
         data=request.get_json()
