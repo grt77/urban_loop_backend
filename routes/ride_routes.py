@@ -2,7 +2,7 @@ from flask import Blueprint,request,jsonify
 from Services.auth_service import token_required
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from Services.auth_service import token_required
-from Services.ride_services import insert_location,insert_ride,get_driver_verified_details
+from Services.ride_services import insert_location,insert_ride,get_driver_verified_details,get_user_id
 from debug import log_debug_message
 
 ride_routes=Blueprint('ride',__name__)
@@ -41,3 +41,12 @@ def get_driver_details():
     except Exception as e:
         return {"message":str(e)}
     
+@ride_routes.route('/get_rider_id',methods=['GET'])
+def get_rider_id():
+    try:
+        data = request.get_json()
+        mbno=data.get('mbno')
+        msg=get_user_id(mbno)
+        return {"id":msg}
+    except Exception as e:
+        return {"error":str(e)}

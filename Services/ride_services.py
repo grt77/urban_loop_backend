@@ -1,6 +1,6 @@
 from uuid import uuid4
 from Database.dbclass import DBService
-from Database.predefined_sql_statements import location_creation_query,ride_creation_query,driver_status_query
+from Database.predefined_sql_statements import location_creation_query,ride_creation_query,driver_status_query,get_user_id_stmt
 from debug import log_debug_message
 
 
@@ -47,4 +47,15 @@ def get_driver_verified_details(d_id):
         return {"message":str(e)}
 
 
-
+def get_user_id(mobile_num):
+    try:
+        log_debug_message(mobile_num)
+        db=DBService()
+        sql_stmt=get_user_id_stmt
+        msg=db.fetch_one_record(sql_stmt,[mobile_num])
+        log_debug_message(msg)
+        db.close()
+        return msg
+    except Exception as e:
+        return {"error":str(e)}
+    

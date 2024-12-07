@@ -43,6 +43,8 @@ class DBService:
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, params)
+                log_debug_message(query)
+                log_debug_message(params)
                 result = cursor.fetchone()
                 log_debug_message(result)
             return result

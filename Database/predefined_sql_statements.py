@@ -30,3 +30,11 @@ driver_status_query = """
             SELECT verified,is_available
             FROM urbanloop.drivers 
             WHERE id = %s   """
+
+get_user_id_stmt="""
+
+SELECT id 
+    FROM urbanloop.users 
+    WHERE mobile_number = %s
+
+"""
