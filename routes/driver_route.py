@@ -45,7 +45,7 @@ def verify_otp_route():
     
 
 @driver_routes.route('/get_present_rides',methods=['POST'])
-@token_required
+#@token_required
 def get_present_rides():
     try:
         data=request.get_json()

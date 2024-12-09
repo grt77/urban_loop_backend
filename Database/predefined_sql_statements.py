@@ -58,6 +58,7 @@ get_ride_detials="""
 SELECT 
     r.id AS ride_id,
     r.ride_status,
+    r.price,
     origin.latitude AS origin_lat, 
     origin.longitude AS origin_long, 
     origin.address as orgin_addr,

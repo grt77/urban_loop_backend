@@ -1,5 +1,6 @@
 from Database.predefined_sql_statements import get_ride_detials
 from Database.dbclass import DBService
+from debug import log_debug_message
 import json 
 
 def get_ride_details(mobile_num):
@@ -7,6 +8,7 @@ def get_ride_details(mobile_num):
     params=[mobile_num]
     db = DBService()
     results=db.fetch_all_records(sql_stmt,params)
+    log_debug_message(results)
     if results:
             return json.dumps(results, default=str)  
     else:
