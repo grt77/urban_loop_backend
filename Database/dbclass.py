@@ -62,6 +62,41 @@ class DBService:
                 return {"message":"Success"}
         except Exception as e:
             return {"message":str(e)}
+    def fetch_all_records(self, query, params=None):
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, params)
+                result = cursor.fetchall()  
+                log_debug_message(query)
+                log_debug_message(params)
+                log_debug_message(result)
+            return result
+        except Exception  as e:
+            print(f"Error executing query: {e}")
+            return None
+    def execute_query_with_rowcount(self, query, params=None):
+        try:
+            with self.connection.cursor() as cursor:
+                log_debug_message(query)
+                log_debug_message(params)
+                rowcount = cursor.execute(query, params)  # Executes the query
+                self.connection.commit()  # Commit the transaction
+                return {"message": "Success", "rowcount": rowcount}  # Return affected rows
+        except Exception as e:
+            return {"message": str(e), "rowcount": 0} 
+    def fetch_one_record_with_result(self, query, params=None):
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, params)
+                log_debug_message(query)
+                log_debug_message(params)
+                result = cursor.fetchone()  # Fetches a single record
+                log_debug_message(result)
+            return result
+        except pymysql.MySQLError as e:
+            print(f"Error executing query: {e}")
+            return None
+    
     def close(self):
         if self.connection:
             self.connection.close()

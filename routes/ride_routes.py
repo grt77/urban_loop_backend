@@ -2,7 +2,7 @@ from flask import Blueprint,request,jsonify
 from Services.auth_service import token_required
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from Services.auth_service import token_required
-from Services.ride_services import insert_location,insert_ride,get_driver_verified_details,get_user_id
+from Services.ride_services import insert_location,insert_ride,get_driver_verified_details,get_user_id,get_no_of_requested_ride,cancel_ride,cancel_rides_by_phone_number
 from debug import log_debug_message
 
 ride_routes=Blueprint('ride',__name__)
@@ -41,7 +41,7 @@ def get_driver_details():
     except Exception as e:
         return {"message":str(e)}
     
-@ride_routes.route('/get_rider_id',methods=['GET'])
+@ride_routes.route('/get_rider_id',methods=['POST'])
 def get_rider_id():
     try:
         data = request.get_json()
@@ -50,3 +50,35 @@ def get_rider_id():
         return {"id":msg}
     except Exception as e:
         return {"error":str(e)}
+
+
+@ride_routes.route('/can_ride_created',methods=['POST'])
+def can_ride_created():
+    try:
+        data = request.get_json()
+        id=data.get('id')
+        result=get_no_of_requested_ride(id)
+        return result
+    except Exception as e:
+        return {"Error":str(e)}
+    
+@ride_routes.route('/cancel_ride',methods=['POST'])
+def cancel_ride_with_id():
+    try:
+        data = request.get_json()
+        id=data.get('ride_id')
+        result=cancel_ride(id)
+        return result
+    except Exception as e:
+        return {"Error":str(e)}
+    
+@ride_routes.route('/cancel_rideby_phno',methods=['POST'])
+def cancel_ride_with_phno():
+    try:
+        data = request.get_json()
+        id=data.get('phno')
+        result=cancel_rides_by_phone_number(id)
+        return result
+    except Exception as e:
+        return {"Error":str(e)}
+

@@ -65,3 +65,19 @@ http://127.0.0.1:5000/map/get_mapbox_suggestions
 GET http://127.0.0.1:5000/map/get_location_details
 
 
+/driver/get_present_rides
+http://127.0.0.1:5000/ride/can_ride_created
+
+
+
+/ride/cancel_ride
+
+http://127.0.0.1:5000/ride/cancel_rideby_phno
+
+
+
+http://127.0.0.1:5000/driver/accept_ride_id_reject_rem
+{
+    "ride_id":"2325cbb1-b5f5-11ef-992f-06e09a310733",
+    "driver_id":"973239d3-a8f3-11ef-992f-06e09a310733"
+}

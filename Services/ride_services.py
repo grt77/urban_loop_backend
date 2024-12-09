@@ -1,6 +1,6 @@
 from uuid import uuid4
 from Database.dbclass import DBService
-from Database.predefined_sql_statements import location_creation_query,ride_creation_query,driver_status_query,get_user_id_stmt
+from Database.predefined_sql_statements import location_creation_query,ride_creation_query,driver_status_query,get_user_id_stmt,get_requetsed_rides,cancel_ride_with_id
 from debug import log_debug_message
 
 
@@ -59,3 +59,53 @@ def get_user_id(mobile_num):
     except Exception as e:
         return {"error":str(e)}
     
+def get_no_of_requested_ride(id):
+    try:
+        db=DBService()
+        sql_stmt=get_requetsed_rides
+        result=db.fetch_one_record_with_result(sql_stmt,[id])
+        if result and "ride_count" in result:
+            return {"ride_count": result["ride_count"]}
+        else:
+            return {"ride_count": 0}
+    except Exception as e:
+        return {"ride_count": 0,"Error":str(e)}
+
+def cancel_ride(ride_id):
+    try:
+        db = DBService()
+        query = cancel_ride_with_id
+        result = db.execute_query_with_rowcount(query, [ride_id])
+        db.close()
+        if result["rowcount"] > 0:
+            return {"message": "success"}
+        else:
+            return {"message": "No ride found with the provided ID"}
+    except Exception as e:
+        if 'db' in locals():
+            db.close()
+        return {"error": str(e)}
+def cancel_rides_by_phone_number(phone_number):
+    try:
+        db = DBService()
+        query_get_user_id = """
+        SELECT id FROM urbanloop.users 
+        WHERE mobile_number = %s;
+        """
+        user_result = db.fetch_one_record(query_get_user_id, [phone_number])
+        if not user_result:
+            db.close()
+            return {"message": "No user found with the provided phone number"}
+        user_id = user_result["id"]
+        query_update_rides = """
+        UPDATE urbanloop.rides 
+        SET ride_status = 'cancelled', cancelled_at = NOW() 
+        WHERE user_id = %s AND ride_status != 'cancelled';
+        """
+        update_result = db.execute_query(query_update_rides, [user_id])
+        db.close()
+        return {"message": "success"}
+    except Exception as e:
+        if 'db' in locals():
+            db.close()
+        return {"message": str(e)}
