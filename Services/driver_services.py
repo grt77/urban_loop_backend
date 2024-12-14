@@ -53,3 +53,55 @@ def complete_ride(ride_id):
         if 'db' in locals():
             db.close()
         return {"message": str(e)}
+
+
+def start_ride(ride_id):
+    try:
+        # Initialize the database service
+        db = DBService()
+        
+        # SQL query to update the ride status and started_at
+        query_start_ride = """
+        UPDATE urbanloop.rides
+        SET ride_status = 'started', started_at = NOW()
+        WHERE id = %s;
+        """
+        
+        # Execute the query with the provided ride_id
+        result = db.execute_query(query_start_ride, [ride_id])
+        
+        # Close the database connection
+        db.close()
+        
+        return {"message": "Ride marked as started successfully"}
+    except Exception as e:
+        # Ensure the database connection is closed in case of an error
+        if 'db' in locals():
+            db.close()
+        return {"message": str(e)}
+
+
+def complete_ride(ride_id):
+    try:
+        # Initialize the database service
+        db = DBService()
+        
+        # SQL query to update the ride status and started_at
+        query_start_ride = """
+        UPDATE urbanloop.rides
+        SET ride_status = 'completed', completed_at = NOW()
+        WHERE id = %s;
+        """
+        
+        # Execute the query with the provided ride_id
+        result = db.execute_query(query_start_ride, [ride_id])
+        
+        # Close the database connection
+        db.close()
+        
+        return {"message": "Ride marked as started successfully"}
+    except Exception as e:
+        # Ensure the database connection is closed in case of an error
+        if 'db' in locals():
+            db.close()
+        return {"message": str(e)}

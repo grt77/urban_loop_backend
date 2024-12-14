@@ -81,3 +81,12 @@ http://127.0.0.1:5000/driver/accept_ride_id_reject_rem
     "ride_id":"2325cbb1-b5f5-11ef-992f-06e09a310733",
     "driver_id":"973239d3-a8f3-11ef-992f-06e09a310733"
 }
+
+
+/ride/check_rider_status
+
+http://127.0.0.1:5000/ride/get_rider_details
+
+{
+"mobile_num":8919006012
+}

@@ -109,3 +109,92 @@ def cancel_rides_by_phone_number(phone_number):
         if 'db' in locals():
             db.close()
         return {"message": str(e)}
+
+
+def check_ride_status(ride_id):
+    """
+    Checks if a ride is accepted or not based on its ride_status.
+
+    Parameters:
+        ride_id (int): The ID of the ride to fetch.
+
+    Returns:
+        dict: A message indicating if the ride is accepted or not.
+    """
+    try:
+        # Initialize the database service
+        db = DBService()
+        
+        # SQL query to fetch the ride_status for the given ride_id
+        query_get_ride_status = """
+        SELECT ride_status 
+        FROM urbanloop.rides 
+        WHERE ride_id = %s;
+        """
+        
+        # Execute the query
+        result = db.fetch_one(query_get_ride_status, [ride_id])
+        db.close()
+        
+        if result:
+            ride_status = result[0]
+            if ride_status == "accepted":
+                return {"message": "The ride is accepted."}
+            else:
+                return {"message": "The ride is not accepted."}
+        else:
+            return {"message": f"No ride found with ride_id={ride_id}."}
+    
+    except Exception as e:
+        # Ensure the database connection is closed in case of an error
+        if 'db' in locals():
+            db.close()
+        return {"message": str(e)}
+
+
+
+def get_ride_info_by_mobile(mobile_number):
+    """
+    Fetches the ride information, including origin and destination details
+    (latitude, longitude, and address) for a specific ride based on the user's mobile number.
+
+    Parameters:
+        mobile_number (str): The mobile number of the user.
+
+    Returns:
+        dict: Contains the ride_id, ride_status, origin location details, destination location details,
+              or an appropriate message if no data is found.
+    """
+    try:
+        # Initialize the database service
+        db = DBService()
+
+        # SQL query to join 'users', 'rides', and 'locations' tables based on provided SQL
+        query_get_ride_info_with_locations = f"""
+        SELECT r.id AS ride_id, r.ride_status, 
+               r.origin_loc_id, r.dest_loc_id, r.price, 
+               ol.latitude AS origin_latitude, ol.longitude AS origin_longitude, ol.address AS origin_address,
+               dl.latitude AS dest_latitude, dl.longitude AS dest_longitude, dl.address AS dest_address
+        FROM urbanloop.users u
+        INNER JOIN urbanloop.rides r ON u.id = r.user_id
+        LEFT JOIN urbanloop.locations ol ON r.origin_loc_id = ol.id
+        LEFT JOIN urbanloop.locations dl ON r.dest_loc_id = dl.id
+        WHERE u.mobile_number = %s;
+        """
+        
+        # Execute the query with the mobile number as input
+        result = db.fetch_one_record(query_get_ride_info_with_locations, [mobile_number])
+        log_debug_message(result)
+        if result:
+            {
+                "ride_id":result["ride_id"]
+            }
+            return result
+        else:
+            return {"message": f"No ride found for mobile number {mobile_number}."}
+
+    except Exception as e:
+        # Ensure the database connection is closed in case of an error
+        if 'db' in locals():
+            db.close()
+        return {"message": str(e)}

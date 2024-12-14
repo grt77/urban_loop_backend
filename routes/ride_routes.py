@@ -2,7 +2,7 @@ from flask import Blueprint,request,jsonify
 from Services.auth_service import token_required
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from Services.auth_service import token_required
-from Services.ride_services import insert_location,insert_ride,get_driver_verified_details,get_user_id,get_no_of_requested_ride,cancel_ride,cancel_rides_by_phone_number
+from Services.ride_services import insert_location,insert_ride,get_driver_verified_details,get_user_id,get_no_of_requested_ride,cancel_ride,cancel_rides_by_phone_number,check_ride_status,get_ride_info_by_mobile
 from debug import log_debug_message
 
 ride_routes=Blueprint('ride',__name__)
@@ -82,3 +82,23 @@ def cancel_ride_with_phno():
     except Exception as e:
         return {"Error":str(e)}
 
+@ride_routes.route('/check_rider_status',methods=['POST'])
+def check_rider_status():
+    try:
+        data = request.get_json()
+        id=data.get('ride_id')
+        result=check_ride_status(id)
+        return result
+    except Exception as e:
+        return {"Error":str(e)}
+    
+@ride_routes.route('/get_rider_details',methods=['POST'])
+def get_rider_details():
+    try:
+        data = request.get_json()
+        id=data.get('mobile_num')
+        result=get_ride_info_by_mobile(id)
+        #log_debug_message(result)
+        return result
+    except Exception as e:
+        return {"Error":str(e)}
