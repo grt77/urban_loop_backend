@@ -154,3 +154,41 @@ def get_driverride_info_by_mobile(mobile_number):
         if 'db' in locals():
             db.close()
         return {"message": str(e)}
+
+
+
+def get_driver_id_by_mobile(mobile_number):
+    """
+    Fetches the driver ID from the drivers table using the mobile number.
+
+    Parameters:
+        mobile_number (str): The mobile number of the driver.
+
+    Returns:
+        dict: Contains the driver ID or an appropriate message if no record is found.
+    """
+    try:
+        # Initialize the database service
+        db = DBService()
+
+        # SQL query to get the driver ID
+        query_get_driver_id = """
+        SELECT id 
+        FROM urbanloop.drivers 
+        WHERE mobile_no = %s;
+        """
+
+        # Execute the query with the provided mobile number
+        result = db.fetch_one_record(query_get_driver_id, [mobile_number])
+        
+
+        if result:
+            return {"driver_id": result["id"]}
+        else:
+            return {"message": f"No driver found with mobile number {mobile_number}."}
+
+    except Exception as e:
+        # Ensure the database connection is closed in case of an error
+        if 'db' in locals():
+            db.close()
+        return {"message": str(e)}
