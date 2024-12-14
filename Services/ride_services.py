@@ -180,7 +180,7 @@ def get_ride_info_by_mobile(mobile_number):
         LEFT JOIN urbanloop.locations ol ON r.origin_loc_id = ol.id
         LEFT JOIN urbanloop.locations dl ON r.dest_loc_id = dl.id
         LEFT JOIN urbanloop.drivers d on r.driver_id= d.id
-        WHERE u.mobile_number = %s and r.ride_status="requested" or r.ride_status="accepted"
+        WHERE u.mobile_number = %s and r.ride_status="requested" or r.ride_status="started"
         """
         
         # Execute the query with the mobile number as input

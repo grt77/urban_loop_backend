@@ -3,7 +3,7 @@ from Services.otp_service import send_otp,generate_otp,verify_otp,verify_otp_dri
 from Database.predefined_sql_statements import update_otp_details
 from Database.dbclass import DBService
 from Services.auth_service import get_token,token_required
-from Services.driver_services import get_ride_details,accept_ride_and_cancel_others,complete_ride,start_ride
+from Services.driver_services import get_ride_details,accept_ride_and_cancel_others,complete_ride,start_ride,get_driverride_info_by_mobile
 
 
 driver_routes=Blueprint('driver',__name__)
@@ -86,6 +86,17 @@ def startRide():
         data=request.get_json()
         ride_id=data.get('ride_id')
         result=start_ride(ride_id)
+        return result
+    except Exception as e:
+        return {"message":str(e)}
+    
+
+@driver_routes.route('/getdriverride_info',methods=['POST'])
+def get_rider_ride_info():
+    try:
+        data=request.get_json()
+        mobile_num=data.get('mobile_num')
+        result=get_driverride_info_by_mobile(mobile_num)
         return result
     except Exception as e:
         return {"message":str(e)}

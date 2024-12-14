@@ -105,3 +105,52 @@ def complete_ride(ride_id):
         if 'db' in locals():
             db.close()
         return {"message": str(e)}
+    
+
+
+def get_driverride_info_by_mobile(mobile_number):
+    """
+    Fetches the ride information, including origin and destination details
+    (latitude, longitude, and address) for a specific ride based on the user's mobile number.
+
+    Parameters:
+        mobile_number (str): The mobile number of the user.
+
+    Returns:
+        dict: Contains the ride_id, ride_status, origin location details, destination location details,
+              or an appropriate message if no data is found.
+    """
+    try:
+        # Initialize the database service
+        db = DBService()
+
+        # SQL query to join 'users', 'rides', and 'locations' tables based on provided SQL
+        query_get_ride_info_with_locations = f"""
+        SELECT r.id AS ride_id, r.ride_status, 
+               r.origin_loc_id, r.dest_loc_id, r.price, 
+               ol.latitude AS origin_latitude, ol.longitude AS origin_longitude, ol.address AS origin_address,
+               dl.latitude AS dest_latitude, dl.longitude AS dest_longitude, dl.address AS dest_address
+        FROM urbanloop.drivers d
+        INNER JOIN urbanloop.rides r ON d.id = r.driver_id
+        LEFT JOIN urbanloop.locations ol ON r.origin_loc_id = ol.id
+        LEFT JOIN urbanloop.locations dl ON r.dest_loc_id = dl.id
+        WHERE d.mobile_no = %s and r.ride_status!="completed" and r.ride_status!="cancelled" and r.ride_status!="requested"
+
+        """
+        
+        # Execute the query with the mobile number as input
+        result = db.fetch_one_record(query_get_ride_info_with_locations, [mobile_number])
+        log_debug_message(result)
+        if result:
+            {
+                "ride_id":result["ride_id"]
+            }
+            return result
+        else:
+            return {"message": f"No ride found for mobile number {mobile_number}."}
+
+    except Exception as e:
+        # Ensure the database connection is closed in case of an error
+        if 'db' in locals():
+            db.close()
+        return {"message": str(e)}
