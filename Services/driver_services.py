@@ -173,7 +173,7 @@ def get_driver_id_by_mobile(mobile_number):
 
         # SQL query to get the driver ID
         query_get_driver_id = """
-        SELECT id 
+        SELECT id,velc_no,vel_type
         FROM urbanloop.drivers 
         WHERE mobile_no = %s;
         """
@@ -183,7 +183,10 @@ def get_driver_id_by_mobile(mobile_number):
         
 
         if result:
-            return {"driver_id": result["id"]}
+            return {"driver_id": result["id"],
+                    "vel_no":result["velc_no"],
+                    "vel_type":result["vel_type"]
+                    }
         else:
             return {"message": f"No driver found with mobile number {mobile_number}."}
 
