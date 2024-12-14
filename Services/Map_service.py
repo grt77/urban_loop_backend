@@ -59,6 +59,42 @@ def get_location_details(mapbox_id, session_token, language="en", eta_type=None,
 
 
 
+def get_location_name(lat, lon):
+    load_dotenv()
+    access_token = os.getenv("MAP_TOKEN")
+    url = f"https://api.mapbox.com/geocoding/v5/mapbox.places/{lon},{lat}.json"
+
+    # API parameters
+    params = {
+        'access_token': access_token,
+        'proximity': f"{lon},{lat}",
+        
+        'limit': 1         
+    }
+
+    try:
+        # Send GET request to Mapbox API
+        response = requests.get(url, params=params)
+        response.raise_for_status()  # Raise exception for HTTP errors
+        
+        # Parse the JSON response
+        data = response.json()
+        
+        # Extract the place name
+        if 'features' in data and len(data['features']) > 0:
+            place_name = data['features'][0]['place_name']
+            return place_name
+        else:
+            return "Location name not found."
+    except requests.exceptions.RequestException as e:
+        return f"Error: {e}"
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     pass

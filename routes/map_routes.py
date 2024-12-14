@@ -1,5 +1,5 @@
 from flask import Blueprint,request,jsonify
-from Services.Map_service import get_location_details,get_mapbox_suggestions
+from Services.Map_service import get_location_details,get_mapbox_suggestions,get_location_name
 
 map_routes=Blueprint('map',__name__)
 
@@ -27,3 +27,14 @@ def get_loc_details():
     except Exception as e:
         return {"Error":str(e)}
 
+@map_routes.route('/get_location_name',methods=['POST'])
+def get_locationName():
+    try:
+        data=request.get_json()
+        lat=data.get('lat')
+        long=data.get('long')
+        resp=get_location_name(lat,long)
+        return {"Name":resp}
+    except Exception as e:
+        return {"Error":str(e)}
+    
