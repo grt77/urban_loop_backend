@@ -171,7 +171,7 @@ def get_ride_info_by_mobile(mobile_number):
 
         # SQL query to join 'users', 'rides', and 'locations' tables based on provided SQL
         query_get_ride_info_with_locations = f"""
-        SELECT r.id AS ride_id, r.ride_status, 
+        SELECT r.id AS ride_id, r.ride_status, d.velc_no,d.vel_type,d.mobile_no,d.verified,
                r.origin_loc_id, r.dest_loc_id, r.price, 
                ol.latitude AS origin_latitude, ol.longitude AS origin_longitude, ol.address AS origin_address,
                dl.latitude AS dest_latitude, dl.longitude AS dest_longitude, dl.address AS dest_address
@@ -179,7 +179,8 @@ def get_ride_info_by_mobile(mobile_number):
         INNER JOIN urbanloop.rides r ON u.id = r.user_id
         LEFT JOIN urbanloop.locations ol ON r.origin_loc_id = ol.id
         LEFT JOIN urbanloop.locations dl ON r.dest_loc_id = dl.id
-        WHERE u.mobile_number = %s and r.ride_status="requested" or r.ride_status="started"
+        LEFT JOIN urbanloop.drivers d on r.driver_id= d.id
+        WHERE u.mobile_number = %s and r.ride_status="requested" or r.ride_status="accepted"
         """
         
         # Execute the query with the mobile number as input
