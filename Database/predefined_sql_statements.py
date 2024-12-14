@@ -59,12 +59,12 @@ SELECT
     r.id AS ride_id,
     r.ride_status,
     r.price,
-    origin.latitude AS origin_lat, 
-    origin.longitude AS origin_long, 
-    origin.address as orgin_addr,
-    destination.address as dest_addr,
-    destination.latitude AS dest_lat, 
-    destination.longitude AS dest_long,
+    origin.latitude AS origin_latitude, 
+    origin.longitude AS origin_longitude, 
+    origin.address as orgin_address,
+    destination.address as dest_address,
+    destination.latitude AS dest_latitude, 
+    destination.longitude AS dest_longitude,
     u.mobile_number AS user_mobile,
     d.mobile_no AS driver_mobile
 FROM urbanloop.rides r
