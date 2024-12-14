@@ -195,3 +195,41 @@ def get_driver_id_by_mobile(mobile_number):
         if 'db' in locals():
             db.close()
         return {"message": str(e)}
+
+
+def is_driver_id_present(driver_id):
+    """
+    Checks if a driver ID exists in the drivers table.
+
+    Parameters:
+        driver_id (int): The ID of the driver to check.
+
+    Returns:
+        dict: Indicates whether the driver ID exists or not.
+    """
+    try:
+        # Initialize the database service
+        db = DBService()
+
+        # SQL query to check for driver ID
+        query_check_driver_id = """
+        SELECT COUNT(1)  as cnt
+        FROM urbanloop.drivers 
+        WHERE id = %s;
+        """
+
+        # Execute the query
+        result = db.fetch_one_record(query_check_driver_id, [driver_id])
+        
+
+        # Check if the count is greater than zero
+        if result and result["cnt"] > 0:
+            return {"exists": True, "message": f"Driver ID {driver_id} exists."}
+        else:
+            return {"exists": False, "message": f"Driver ID {driver_id} does not exist."}
+
+    except Exception as e:
+        # Ensure the database connection is closed in case of an error
+        if 'db' in locals():
+            db.close()
+        return {"message": str(e)}
