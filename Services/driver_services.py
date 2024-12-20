@@ -135,6 +135,7 @@ def get_driverride_info_by_mobile(mobile_number):
         LEFT JOIN urbanloop.locations ol ON r.origin_loc_id = ol.id
         LEFT JOIN urbanloop.locations dl ON r.dest_loc_id = dl.id
         WHERE d.mobile_no = %s and r.ride_status!="completed" and r.ride_status!="cancelled" and r.ride_status!="requested"
+        order by r.created_at desc limit 1
 
         """
         
