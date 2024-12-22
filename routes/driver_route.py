@@ -4,7 +4,7 @@ from Database.predefined_sql_statements import update_otp_details
 from Database.dbclass import DBService
 from Services.auth_service import get_token,token_required
 from Services.driver_services import get_ride_details,accept_ride_and_cancel_others,complete_ride,start_ride,get_driverride_info_by_mobile,get_driver_id_by_mobile,is_driver_id_present
-
+from Services.message_service import send_text_message,send_whatsapp_message,get_driver_mobile_from_rides,get_user_mobile_from_rides
 
 driver_routes=Blueprint('driver',__name__)
 
@@ -16,9 +16,9 @@ def send_otp_route():
         mobile_number=data.get('mobile_number')
         if not mobile_number:
             return jsonify({"error": "Mobile number is required"}), 400
-        # otp = generate_otp()
-        otp = 123456
-        #resp=send_otp(mobile_number, otp) 
+        otp = generate_otp()
+        #otp = 123456
+        resp=send_otp(mobile_number, otp) 
         result=db.execute_query_with_rowcount(update_otp_details,[otp,mobile_number])
         db.close()
         if result["rowcount"] > 0:
@@ -63,6 +63,8 @@ def accept_ride_id():
         ride_id=data.get('ride_id')
         driver_id=data.get('driver_id')
         result=accept_ride_and_cancel_others(ride_id,driver_id)
+        send_text_message(str(get_user_mobile_from_rides(id)),f"Your Ride is :{ride_id}-Ride is Accepted by driver")
+        send_whatsapp_message(str(get_user_mobile_from_rides(id)),f"Your Ride is :{ride_id}-Ride is Accepted by the Driver")
         return result
     except Exception as e:
         return {"message":str(e)}
@@ -76,6 +78,8 @@ def ride_complete():
         data=request.get_json()
         ride_id=data.get('ride_id')
         result=complete_ride(ride_id)
+        send_text_message(str(get_user_mobile_from_rides(id)),f"Your Ride is :{ride_id}-Ride is Completed by driver")
+        send_whatsapp_message(str(get_user_mobile_from_rides(id)),f"Your Ride is :{ride_id}-Ride is Completed by the Driver")
         return result
     except Exception as e:
         return {"message":str(e)}
@@ -86,6 +90,8 @@ def startRide():
         data=request.get_json()
         ride_id=data.get('ride_id')
         result=start_ride(ride_id)
+        send_text_message(str(get_user_mobile_from_rides(id)),f"Your Ride is :{ride_id}-Ride is started by driver")
+        send_whatsapp_message(str(get_user_mobile_from_rides(id)),f"Your Ride is :{ride_id}-Ride is started by the Driver")
         return result
     except Exception as e:
         return {"message":str(e)}

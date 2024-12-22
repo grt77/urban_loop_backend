@@ -30,6 +30,7 @@ def accept_ride_and_cancel_others(ride_id, driver_id):
         WHERE driver_id = %s AND ride_status = 'requested' AND id != %s;
         """
         cancel_result = db.execute_query(query_cancel_other_rides, [driver_id, ride_id])
+        update_driver_availability_by_ride_False(ride_id)
         db.close()
         return {"message": "Ride accepted and other requested rides cancelled successfully"}
     except Exception as e:
@@ -47,6 +48,7 @@ def complete_ride(ride_id):
         WHERE id = %s;
         """
         result = db.execute_query(query_complete_ride, [ride_id])
+        update_driver_availability_by_ride_True(ride_id)
         db.close()
         return {"message": "Ride marked as completed successfully"}
     except Exception as e:
@@ -95,7 +97,7 @@ def complete_ride(ride_id):
         
         # Execute the query with the provided ride_id
         result = db.execute_query(query_start_ride, [ride_id])
-        
+        update_driver_availability_by_ride_True(ride_id)
         # Close the database connection
         db.close()
         
@@ -234,3 +236,44 @@ def is_driver_id_present(driver_id):
         if 'db' in locals():
             db.close()
         return {"message": str(e)}
+
+
+
+def update_driver_availability_by_ride_False(ride_id):
+    try:
+        db = DBService()
+        query = """
+        UPDATE urbanloop.drivers
+        SET is_available = FALSE
+        WHERE id = (
+            SELECT driver_id
+            FROM urbanloop.rides
+            WHERE id = %s
+        );
+        """
+        db.execute_query(query, [ride_id])
+        return {"message": "Driver availability updated successfully."}
+    except Exception as e:
+        if 'db' in locals():
+            db.close()
+        return {"message": f"Error updating driver availability: {str(e)}"}
+
+
+def update_driver_availability_by_ride_True(ride_id):
+    try:
+        db = DBService()
+        query = """
+        UPDATE urbanloop.drivers
+        SET is_available = True
+        WHERE id = (
+            SELECT driver_id
+            FROM urbanloop.rides
+            WHERE id = %s
+        );
+        """
+        db.execute_query(query, [ride_id])
+        return {"message": "Driver availability updated successfully."}
+    except Exception as e:
+        if 'db' in locals():
+            db.close()
+        return {"message": f"Error updating driver availability: {str(e)}"}

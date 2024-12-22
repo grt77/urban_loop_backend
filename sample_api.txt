@@ -19,7 +19,7 @@
 
 3-POST-http://127.0.0.1:5000/ride/create_ride
 {
-    "driver_id": "973239d3-a8f3-11ef-992f-06e09a310733",
+    "driver_id": "ac6ae1d0-bed3-11ef-992f-06e09a310733",
     "origin_lat": 12.9715987,
     "origin_lon": 77.5945627,
     "origin_addr": "Bangalore, India",
@@ -27,7 +27,7 @@
     "dest_lon": 80.2707184,
     "dest_addr": "Chennai, India",
     "price": 500,
-    "user_id": "6e690064-a8e9-11ef-992f-06e09a310733"
+    "user_id": "b656e2b3-bf6a-11ef-992f-06e09a310733"
 }
 
 Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGVfbnVtYmVyIjoiODkxOTAwNjAxMiIsImV4cCI6MTczMjMwNjk3OH0.I5hCclicBHN-sW9DU15miudXGNKwsdVrJ2JJmGDiUZQ

@@ -5,7 +5,7 @@ from  dotenv import load_dotenv
 from Database.dbclass import DBService
 from Database.predefined_sql_statements import get_otp_statement,get_driver_otp_statement
 from datetime import datetime,timedelta
-
+from debug import log_debug_message
 
 
 def generate_otp():
@@ -14,17 +14,22 @@ def generate_otp():
 def send_otp(mobile_number, otp):
     try:
         load_dotenv()
-        account_sid = os.getenv("TWILIO_ACCOUNT_SID")
-        auth_token = os.getenv("TWILIO_AUTH_TOKEN")
-        from_number = os.getenv("TWILIO_PHONE_NUMBER")
+        log_debug_message(mobile_number)
+        log_debug_message(otp)
+        account_sid = "ACeaba03cb12299f946d5f8727eb3b850c"
+        auth_token = "11cee6b8989e1527efbe565e79278474"
+        from_number = "+15615302541"
         client = Client(account_sid,auth_token)
+        log_debug_message(client)
         message = client.messages.create(
             body=f"Your OTP from Urbanloop is {otp}. Valid for 5 minutes ,Please do not share it with anyone.",
             from_=from_number,
             to=f'+91{mobile_number}'
         )
+        log_debug_message(message)
         return {'success':message.sid,'failure':None}
     except Exception as e:
+        log_debug_message(e)
         return(
             {
                 "success":None,

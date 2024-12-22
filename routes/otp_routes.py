@@ -16,9 +16,9 @@ def send_otp_route():
         mobile_number=data.get('mobile_number')
         if not mobile_number:
             return jsonify({"error": "Mobile number is required"}), 400
-        # otp = generate_otp()
-        otp = 123456
-        # resp=send_otp(mobile_number, otp) 
+        otp = generate_otp()
+        #otp = 123456
+        resp=send_otp(mobile_number, otp) 
         result = db.execute_query_insert_otp_login(insert_query_intial_login, [mobile_number,otp])
         resp={'success':result["message"],'failure':None} #need to comment
         if resp['success'] is not None:

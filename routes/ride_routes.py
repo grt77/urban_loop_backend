@@ -4,15 +4,17 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from Services.auth_service import token_required
 from Services.ride_services import insert_location,insert_ride,get_driver_verified_details,get_user_id,get_no_of_requested_ride,cancel_ride,cancel_rides_by_phone_number,check_ride_status,get_ride_info_by_mobile
 from debug import log_debug_message
+from Services.message_service import send_text_message,send_whatsapp_message,get_driver_mobile_num,get_user_mobile_num,get_user_mobile_from_rides,get_driver_mobile_from_rides
 
 ride_routes=Blueprint('ride',__name__)
 
 
 @ride_routes.route('/create_ride',methods=['POST'])
-@token_required
+#@token_required
 def create_ride():
     try:
         data = request.get_json()
+        print(data)
         driver_id = data.get('driver_id')
         o_la = data.get('origin_lat')
         o_lo = data.get('origin_lon')
@@ -23,8 +25,17 @@ def create_ride():
         price= data.get('price')
         d_id=data.get('driver_id')
         u_id=data.get('user_id')
+        user_mobile=data.get('user_mobile')
+        if u_id is None:
+            u_id=get_user_id(user_mobile)
+        print("user_id::::::",u_id)
+        send_text_message(str(get_user_mobile_num(u_id)),f"Ride is created for You from {o_addr} to {d_addr} with Rs.{price}")
+        send_whatsapp_message(get_user_mobile_num(u_id),f"Ride is created for You from {o_addr} to {d_addr} with Rs.{price}")
+        send_text_message(get_driver_mobile_num(d_id),f"New ride for You from {o_addr} to {d_addr} with {price} Rs, please click the link \"http://localhost:5173/driver/login\"")
+        send_whatsapp_message(get_driver_mobile_num(d_id),f"New ride for You from {o_addr} to {d_addr} with {price} Rs, please click the link \"http://localhost:5173/driver/login\"")
         msg=insert_location(o_la,o_lo,o_addr,d_la,d_lo,d_addr)
         if msg["message"]=="Success":
+            log_debug_message("rideeeeeeee.............")
             msg=insert_ride(u_id,d_id,msg["ids"][0],msg["ids"][1],"requested",price)
         return msg
     except Exception as e:
@@ -68,6 +79,8 @@ def cancel_ride_with_id():
         data = request.get_json()
         id=data.get('ride_id')
         result=cancel_ride(id)
+        send_text_message(str(get_user_mobile_from_rides(id)),f"your Ride id is:{id}-Ride is cancelled by driver")
+        send_whatsapp_message(str(get_user_mobile_from_rides(id)),f"your Ride id is:{id}-Ride is cancelled by the Driver")
         return result
     except Exception as e:
         return {"Error":str(e)}
