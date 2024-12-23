@@ -1,8 +1,8 @@
 runtime: python39
 
-env_variables:
-  FLASK_ENV: production
-
 handlers:
 - url: /.*
-  script: auto
+  script: main.app
+
+libraries:
+-name: flask
