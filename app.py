@@ -18,7 +18,6 @@ def create_app():
     app.register_blueprint(driver_routes,url_prefix='/driver')
     return app
 
-if __name__ == "__main__":
-    app = create_app()
-    app.logger.setLevel(logging.DEBUG)
+app = create_app()
+app.logger.setLevel(logging.DEBUG)
     #app.run(host="0.0.0.0",port=8080,debug=True)
