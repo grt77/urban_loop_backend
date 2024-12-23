@@ -1,11 +1,4 @@
 runtime: python39
-entrypoint: gunicorn -b :$PORT run:app  # Use run.py and app instance
-
-instance_class: F1  # Smallest instance type for cost and resource efficiency
-automatic_scaling:
-  max_instances: 2
-  min_instances: 1
-  target_cpu_utilization: 0.75
 
 env_variables:
   FLASK_ENV: production
